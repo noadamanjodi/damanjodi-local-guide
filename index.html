@@ -141,31 +141,44 @@ function buildFilters(d){
 function renderCards(data){
   document.getElementById("detail").style.display="none";
   const c=document.getElementById("cards");
-  c.style.display="grid";c.innerHTML="";
+  c.style.display="grid";
+  c.innerHTML="";
+
   data.forEach((x,i)=>{
     const photos=x.Photos?.length?x.Photos:[x.Photo_Link];
+
     c.innerHTML+=`
-      <div class="card" onclick="openDetail(${i})">
+      <div class="card">
         <div class="slider">
           <img id="img${i}" src="${photos[0]}">
           ${photos.length>1?`
-          <button class="arrow prev" onclick="event.stopPropagation();slide(${i},-1)">‹</button>
-          <button class="arrow next" onclick="event.stopPropagation();slide(${i},1)">›</button>`:""}
+            <button class="arrow prev" onclick="slide(${i},-1)">‹</button>
+            <button class="arrow next" onclick="slide(${i},1)">›</button>
+          `:""}
         </div>
-        <div class="dots" id="dots${i}">${photos.map(()=>"<span></span>").join("")}</div>
+
+        <div class="dots" id="dots${i}">
+          ${photos.map(()=>"<span></span>").join("")}
+        </div>
+
         <div class="card-content">
           <h3>${x.Name}</h3>
           <p>${x.Description}</p>
           <p>☎️ ${x.Contact}</p>
+
           <div class="actions">
             <a href="${x.Map_Link}" target="_blank"
-               onclick="event.stopPropagation();track('map_click','${x.Name}')">📍 Map</a>
+               onclick="track('map_click','${x.Name}')">📍 Map</a>
+
             <a class="secondary" href="tel:${x.Contact}"
-               onclick="event.stopPropagation();track('call_click','${x.Name}')">Call</a>
+               onclick="track('call_click','${x.Name}')">Call</a>
           </div>
         </div>
-      </div>`;
-    autoSlide(i,photos);updateDots(i,0);
+      </div>
+    `;
+
+    autoSlide(i,photos);
+    updateDots(i,0);
   });
 }
 
