@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Damanjodi Local Guide</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- 🔹 GOOGLE ANALYTICS -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G5WFS9428J"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-G5WFS9428J');
+</script>
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI',Arial;
+  background:linear-gradient(135deg,#eaf0ff,#ffffff);
+}
+
+/* ====== PAGE LAYOUT ====== */
+.mainWrap{
+  display:grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap:30px;
+  max-width:1500px;
+  margin:auto;
+  padding:20px;
+}
+@media(max-width:1000px){
+  .mainWrap{grid-template-columns:1fr;}
+}
+
+/* ====== HEADER ====== */
+header{
+  text-align:center;
+  padding:40px 20px;
+  background:linear-gradient(135deg,#003f88,#0057d9);
+  color:white;
+}
+
+/* ====== LEFT: LOCAL GUIDE ====== */
+.search-box{text-align:center;padding:15px;}
+.search-box input{
+  width:90%;max-width:420px;
+  padding:10px 14px;border-radius:25px;
+  border:1px solid #b9c7e4;
+}
+
+.filters{text-align:center;padding:10px;}
+.filters button{
+  margin:6px;padding:8px 16px;
+  border:none;border-radius:20px;
+  background:#0057d9;color:white;cursor:pointer;
+}
+.filters button.active{background:#003f88}
+
+.container{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:30px;
+}
+
+.card{
+  background:white;border-radius:22px;
+  box-shadow:0 14px 35px rgba(0,0,0,.15);
+  overflow:hidden;
+}
+
+.slider img{
+  width:100%;height:220px;
+  object-fit:contain;background:#f5f7ff;
+}
+
+.card-content{
+  padding:18px;text-align:center;
+}
+
+.actions{
+  display:flex;justify-content:center;gap:10px;
+}
+.actions a{
+  padding:7px 16px;
+  background:#0057d9;color:white;
+  text-decoration:none;border-radius:20px;
+}
+.actions a.secondary{
+  background:#eaf0ff;color:#003f88;
+}
+
+/* ====== RIGHT: LOCAL NEWS ====== */
+.newsPanel{
+  background:rgba(255,255,255,.6);
+  backdrop-filter:blur(10px);
+  border-radius:20px;
+  box-shadow:8px 8px 18px rgba(0,0,0,.15);
+  padding:18px;
+  height:600px;
+  overflow:hidden;
+  position:relative;
+}
+
+.newsPanel h2{
+  text-align:center;
+  color:#0d47a1;
+  margin-bottom:15px;
+}
+
+.newsList{
+  position:absolute;
+  top:70px;left:0;right:0;bottom:0;
+  overflow:hidden;
+}
+
+.newsItem{
+  background:white;
+  margin:10px 14px;
+  padding:14px;
+  border-radius:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+
+.newsItem a{
+  color:#0a3d62;
+  font-weight:600;
+  text-decoration:none;
+  display:block;
+}
+
+.badge{
+  display:inline-block;
+  padding:2px 10px;
+  background:#1e88e5;
+  color:white;
+  font-size:11px;
+  border-radius:12px;
+  margin-bottom:6px;
+}
+
+@keyframes scrollUp{
+  from{transform:translateY(0);}
+  to{transform:translateY(-100%);}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Damanjodi Local Guide</h1>
+  <p>Auto-updated township information</p>
+</header>
+
+<div class="mainWrap">
+
+<!-- ================= LEFT PANEL ================= -->
+<div>
+
+<div class="search-box">
+  <input id="search" placeholder="Search hospital, school, market...">
+</div>
+
+<div class="filters" id="filters"></div>
+<section class="container" id="cards"></section>
+
+</div>
+
+<!-- ================= RIGHT PANEL ================= -->
+<div class="newsPanel" id="localNewsBox">
+  <h2>📰 Local News</h2>
+  <div class="newsList" id="localNewsList"></div>
+</div>
+
+</div>
+
+<script>
+/* ===== LOCAL GUIDE ===== */
+const GUIDE_URL="https://raw.githubusercontent.com/noadamanjodi/noa-data/main/json/local_guide.json";
+let allData=[];
+
+fetch(GUIDE_URL).then(r=>r.json()).then(d=>{
+  allData=d;buildFilters(d);renderCards(d);
+});
+
+document.getElementById("search").oninput=e=>{
+  const q=e.target.value.toLowerCase();
+  renderCards(allData.filter(x=>x.Name.toLowerCase().includes(q)));
+};
+
+function buildFilters(d){
+  const cats=["All",...new Set(d.map(x=>x.Category))];
+  const f=document.getElementById("filters");f.innerHTML="";
+  cats.forEach((c,i)=>{
+    const b=document.createElement("button");
+    b.textContent=c;if(i===0)b.classList.add("active");
+    b.onclick=()=>{
+      document.querySelectorAll(".filters button").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+      renderCards(c==="All"?allData:allData.filter(x=>x.Category===c));
+    };
+    f.appendChild(b);
+  });
+}
+
+function renderCards(data){
+  const c=document.getElementById("cards");
+  c.innerHTML="";
+  data.forEach(x=>{
+    c.innerHTML+=`
+      <div class="card">
+        <div class="slider">
+          <img src="${x.Photo_Link}">
+        </div>
+        <div class="card-content">
+          <h3>${x.Name}</h3>
+          <p>${x.Description}</p>
+          <p>☎️ ${x.Contact}</p>
+          <div class="actions">
+            <a href="${x.Map_Link}" target="_blank"
+               onclick="gtag('event','map_click',{event_label:'${x.Name}'})">📍 Map</a>
+            <a class="secondary" href="tel:${x.Contact}"
+               onclick="gtag('event','call_click',{event_label:'${x.Name}'})">Call</a>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+/* ===== LOCAL NEWS ===== */
+const NEWS_URL="https://raw.githubusercontent.com/noadamanjodi/noa-news/main/json/local_news.json";
+
+fetch(NEWS_URL).then(r=>r.json()).then(j=>{
+  const box=document.getElementById("localNewsList");
+  let html="";
+  j.items.forEach(n=>{
+    html+=`
+      <div class="newsItem">
+        <span class="badge">Local</span>
+        <a href="${n.url}" target="_blank"
+           onclick="gtag('event','news_click',{event_label:'${n.title}'})">
+          ${n.title}
+        </a>
+      </div>`;
+  });
+  box.innerHTML=html+html;
+  box.style.animation="scrollUp 35s linear infinite";
+});
+
+document.getElementById("localNewsBox").onmouseenter=()=>{
+  document.getElementById("localNewsList").style.animationPlayState="paused";
+};
+document.getElementById("localNewsBox").onmouseleave=()=>{
+  document.getElementById("localNewsList").style.animationPlayState="running";
+};
+</script>
+
+</body>
+</html>
