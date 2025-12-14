@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Damanjodi Local Guide</title>
+<title>Damanjodi Local Guide & News</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- 🔹 GOOGLE ANALYTICS -->
@@ -18,132 +18,165 @@ gtag('config', 'G-G5WFS9428J');
 body{
   margin:0;
   font-family:'Segoe UI',Arial;
-  background:linear-gradient(135deg,#eaf0ff,#ffffff);
+  background:linear-gradient(135deg,#eef3ff,#ffffff);
 }
 
-/* ====== PAGE LAYOUT ====== */
-.mainWrap{
-  display:grid;
-  grid-template-columns: 2.2fr 1fr;
-  gap:30px;
-  max-width:1500px;
-  margin:auto;
-  padding:20px;
-}
-@media(max-width:1000px){
-  .mainWrap{grid-template-columns:1fr;}
-}
-
-/* ====== HEADER ====== */
+/* ===== HEADER ===== */
 header{
+  padding:38px 20px;
   text-align:center;
-  padding:40px 20px;
   background:linear-gradient(135deg,#003f88,#0057d9);
   color:white;
 }
+header h1{margin:0;font-size:34px;}
+header p{opacity:.9}
 
-/* ====== LEFT: LOCAL GUIDE ====== */
-.search-box{text-align:center;padding:15px;}
+/* ===== PAGE GRID ===== */
+.mainWrap{
+  max-width:1500px;
+  margin:auto;
+  padding:20px;
+  display:grid;
+  grid-template-columns:2.3fr 1fr;
+  gap:28px;
+}
+@media(max-width:1100px){
+  .mainWrap{grid-template-columns:1fr;}
+}
+
+/* ================= LEFT PANEL ================= */
+.search-box{text-align:center;margin-bottom:14px;}
 .search-box input{
   width:90%;max-width:420px;
   padding:10px 14px;border-radius:25px;
   border:1px solid #b9c7e4;
 }
 
-.filters{text-align:center;padding:10px;}
+.filters{text-align:center;margin-bottom:12px;}
 .filters button{
-  margin:6px;padding:8px 16px;
+  margin:6px;padding:7px 16px;
   border:none;border-radius:20px;
-  background:#0057d9;color:white;cursor:pointer;
+  background:#0057d9;color:white;
+  cursor:pointer;
 }
 .filters button.active{background:#003f88}
 
 .container{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:30px;
+  gap:26px;
 }
 
 .card{
-  background:white;border-radius:22px;
+  background:white;
+  border-radius:22px;
   box-shadow:0 14px 35px rgba(0,0,0,.15);
   overflow:hidden;
 }
-
-.slider img{
-  width:100%;height:220px;
-  object-fit:contain;background:#f5f7ff;
+.card img{
+  width:100%;
+  height:210px;
+  object-fit:contain;
+  background:#f4f7ff;
 }
-
 .card-content{
-  padding:18px;text-align:center;
+  padding:18px;
+  text-align:center;
 }
-
 .actions{
-  display:flex;justify-content:center;gap:10px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
 }
 .actions a{
   padding:7px 16px;
-  background:#0057d9;color:white;
-  text-decoration:none;border-radius:20px;
+  border-radius:20px;
+  background:#0057d9;
+  color:white;
+  text-decoration:none;
 }
 .actions a.secondary{
-  background:#eaf0ff;color:#003f88;
+  background:#eaf0ff;
+  color:#003f88;
 }
 
-/* ====== RIGHT: LOCAL NEWS ====== */
+/* ================= RIGHT PANEL ================= */
 .newsPanel{
-  background:rgba(255,255,255,.6);
-  backdrop-filter:blur(10px);
-  border-radius:20px;
-  box-shadow:8px 8px 18px rgba(0,0,0,.15);
+  background:rgba(255,255,255,.65);
+  backdrop-filter:blur(12px);
+  border-radius:22px;
+  box-shadow:10px 10px 25px rgba(0,0,0,.15);
   padding:18px;
-  height:600px;
   overflow:hidden;
   position:relative;
 }
 
-.newsPanel h2{
-  text-align:center;
-  color:#0d47a1;
-  margin-bottom:15px;
-}
-
-.newsList{
+/* BREAKING TAG */
+.breaking{
   position:absolute;
-  top:70px;left:0;right:0;bottom:0;
-  overflow:hidden;
+  top:12px;
+  left:-10px;
+  background:#d93025;
+  color:white;
+  padding:6px 18px;
+  font-weight:700;
+  font-size:13px;
+  border-radius:0 18px 18px 0;
+  z-index:2;
 }
 
+/* Horizontal ticker */
+.tickerWrap{
+  overflow:hidden;
+  margin-top:35px;
+}
+.ticker{
+  display:flex;
+  align-items:center;
+  gap:40px;
+  white-space:nowrap;
+  animation:tickerMove linear infinite;
+}
+
+/* SPEED CONTROL (CHANGE THIS) */
+:root{
+  --ticker-speed: 40s; /* lower = faster */
+}
+
+@keyframes tickerMove{
+  from{transform:translateX(0);}
+  to{transform:translateX(-100%);}
+}
+
+/* News item */
 .newsItem{
+  display:flex;
+  align-items:center;
+  gap:10px;
   background:white;
-  margin:10px 14px;
-  padding:14px;
-  border-radius:14px;
-  box-shadow:0 4px 12px rgba(0,0,0,.1);
+  padding:10px 14px;
+  border-radius:18px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
 }
 
 .newsItem a{
   color:#0a3d62;
   font-weight:600;
   text-decoration:none;
-  display:block;
 }
 
+/* Badges */
 .badge{
-  display:inline-block;
-  padding:2px 10px;
-  background:#1e88e5;
-  color:white;
-  font-size:11px;
+  padding:3px 10px;
   border-radius:12px;
-  margin-bottom:6px;
+  font-size:11px;
+  color:white;
 }
-
-@keyframes scrollUp{
-  from{transform:translateY(0);}
-  to{transform:translateY(-100%);}
-}
+.b-damanjodi{background:#1e88e5;}
+.b-koraput{background:#2e7d32;}
+.b-rayagada{background:#ef6c00;}
+.b-nalco{background:#6a1b9a;}
+.b-local{background:#546e7a;}
 </style>
 </head>
 
@@ -151,33 +184,34 @@ header{
 
 <header>
   <h1>Damanjodi Local Guide</h1>
-  <p>Auto-updated township information</p>
+  <p>Township services & real-time local news</p>
 </header>
 
 <div class="mainWrap">
 
-<!-- ================= LEFT PANEL ================= -->
+<!-- ================= LEFT ================= -->
 <div>
+  <div class="search-box">
+    <input id="search" placeholder="Search hospital, school, market...">
+  </div>
 
-<div class="search-box">
-  <input id="search" placeholder="Search hospital, school, market...">
+  <div class="filters" id="filters"></div>
+  <section class="container" id="cards"></section>
 </div>
 
-<div class="filters" id="filters"></div>
-<section class="container" id="cards"></section>
+<!-- ================= RIGHT ================= -->
+<div class="newsPanel" id="newsBox">
+  <div class="breaking">BREAKING</div>
 
-</div>
-
-<!-- ================= RIGHT PANEL ================= -->
-<div class="newsPanel" id="localNewsBox">
-  <h2>📰 Local News</h2>
-  <div class="newsList" id="localNewsList"></div>
+  <div class="tickerWrap">
+    <div class="ticker" id="newsTicker"></div>
+  </div>
 </div>
 
 </div>
 
 <script>
-/* ===== LOCAL GUIDE ===== */
+/* ================= LOCAL GUIDE ================= */
 const GUIDE_URL="https://raw.githubusercontent.com/noadamanjodi/noa-data/main/json/local_guide.json";
 let allData=[];
 
@@ -211,9 +245,7 @@ function renderCards(data){
   data.forEach(x=>{
     c.innerHTML+=`
       <div class="card">
-        <div class="slider">
-          <img src="${x.Photo_Link}">
-        </div>
+        <img src="${x.Photo_Link}">
         <div class="card-content">
           <h3>${x.Name}</h3>
           <p>${x.Description}</p>
@@ -229,31 +261,44 @@ function renderCards(data){
   });
 }
 
-/* ===== LOCAL NEWS ===== */
+/* ================= LOCAL NEWS ================= */
 const NEWS_URL="https://raw.githubusercontent.com/noadamanjodi/noa-news/main/json/local_news.json";
 
+function badgeClass(title){
+  title=title.toLowerCase();
+  if(title.includes("damanjodi")) return "b-damanjodi";
+  if(title.includes("koraput")) return "b-koraput";
+  if(title.includes("rayagada")) return "b-rayagada";
+  if(title.includes("nalco")) return "b-nalco";
+  return "b-local";
+}
+
 fetch(NEWS_URL).then(r=>r.json()).then(j=>{
-  const box=document.getElementById("localNewsList");
-  let html="";
+  const t=document.getElementById("newsTicker");
+  let html=`<strong style="font-size:18px;color:#0d47a1;">📰 Local News</strong>`;
+
   j.items.forEach(n=>{
     html+=`
       <div class="newsItem">
-        <span class="badge">Local</span>
+        <span class="badge ${badgeClass(n.title)}">Local</span>
         <a href="${n.url}" target="_blank"
            onclick="gtag('event','news_click',{event_label:'${n.title}'})">
           ${n.title}
         </a>
       </div>`;
   });
-  box.innerHTML=html+html;
-  box.style.animation="scrollUp 35s linear infinite";
+
+  t.innerHTML = html + html;
+  t.style.animationDuration = getComputedStyle(document.documentElement)
+    .getPropertyValue('--ticker-speed');
 });
 
-document.getElementById("localNewsBox").onmouseenter=()=>{
-  document.getElementById("localNewsList").style.animationPlayState="paused";
+/* Pause on hover */
+document.getElementById("newsBox").onmouseenter=()=>{
+  document.getElementById("newsTicker").style.animationPlayState="paused";
 };
-document.getElementById("localNewsBox").onmouseleave=()=>{
-  document.getElementById("localNewsList").style.animationPlayState="running";
+document.getElementById("newsBox").onmouseleave=()=>{
+  document.getElementById("newsTicker").style.animationPlayState="running";
 };
 </script>
 
