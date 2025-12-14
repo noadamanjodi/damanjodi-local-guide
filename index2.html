@@ -208,9 +208,14 @@ header p{opacity:.9}
 <div class="newsPanel" id="newsBox">
   <div class="breaking latest" id="breakingTag">LATEST</div>
 
-  <div class="newsViewport">
-    <div class="newsScroller" id="newsScroller"></div>
-  </div>
+<h3 style="text-align:center;color:#0d47a1;margin:0 0 10px;">
+  📰 Local News
+</h3>
+
+<div class="newsViewport">
+  <div class="newsScroller" id="newsScroller"></div>
+</div>
+
 </div>
 
 </div>
@@ -282,7 +287,7 @@ function badgeClass(t){
 fetch(NEWS_URL).then(r=>r.json()).then(j=>{
   const s=document.getElementById("newsScroller");
   const b=document.getElementById("breakingTag");
-  let html=`<h3 style="text-align:center;color:#0d47a1;">📰 Local News</h3>`;
+  let html="";
   let now=Date.now(), breaking=false;
 
   j.items.forEach(n=>{
