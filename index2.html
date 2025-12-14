@@ -100,7 +100,7 @@ header p{opacity:.9}
   color:#003f88;
 }
 
-/* ================= RIGHT PANEL ================= */
+/* ================= RIGHT PANEL (VERTICAL NEWS) ================= */
 .newsPanel{
   background:rgba(255,255,255,.65);
   backdrop-filter:blur(12px);
@@ -109,6 +109,7 @@ header p{opacity:.9}
   padding:18px;
   overflow:hidden;
   position:relative;
+  height:600px;
 }
 
 /* BREAKING TAG */
@@ -116,49 +117,52 @@ header p{opacity:.9}
   position:absolute;
   top:12px;
   left:-10px;
-  background:#d93025;
-  color:white;
   padding:6px 18px;
   font-weight:700;
   font-size:13px;
   border-radius:0 18px 18px 0;
   z-index:2;
 }
+.breaking.latest{background:#1e88e5;}
+.breaking.active{
+  background:#d93025;
+  animation:pulse 1.2s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(217,48,37,.6);}
+  70%{box-shadow:0 0 0 10px rgba(217,48,37,0);}
+  100%{box-shadow:0 0 0 0 rgba(217,48,37,0);}
+}
 
-/* Horizontal ticker */
-.tickerWrap{
+/* Vertical scroll */
+.newsViewport{
+  position:absolute;
+  top:55px;left:0;right:0;bottom:0;
   overflow:hidden;
-  margin-top:35px;
 }
-.ticker{
-  display:flex;
-  align-items:center;
-  gap:40px;
-  white-space:nowrap;
-  animation:tickerMove linear infinite;
+.newsScroller{
+  position:absolute;
+  width:100%;
 }
 
-/* SPEED CONTROL (CHANGE THIS) */
+/* SPEED CONTROL */
 :root{
-  --ticker-speed: 40s; /* lower = faster */
+  --scroll-speed: 22s; /* smaller = faster */
 }
 
-@keyframes tickerMove{
-  from{transform:translateX(0);}
-  to{transform:translateX(-100%);}
+@keyframes scrollUp{
+  from{transform:translateY(0);}
+  to{transform:translateY(-50%);}
 }
 
 /* News item */
 .newsItem{
-  display:flex;
-  align-items:center;
-  gap:10px;
   background:white;
-  padding:10px 14px;
-  border-radius:18px;
+  margin:12px 16px;
+  padding:14px;
+  border-radius:16px;
   box-shadow:0 4px 10px rgba(0,0,0,.1);
 }
-
 .newsItem a{
   color:#0a3d62;
   font-weight:600;
@@ -171,6 +175,8 @@ header p{opacity:.9}
   border-radius:12px;
   font-size:11px;
   color:white;
+  margin-bottom:6px;
+  display:inline-block;
 }
 .b-damanjodi{background:#1e88e5;}
 .b-koraput{background:#2e7d32;}
@@ -194,17 +200,16 @@ header p{opacity:.9}
   <div class="search-box">
     <input id="search" placeholder="Search hospital, school, market...">
   </div>
-
   <div class="filters" id="filters"></div>
   <section class="container" id="cards"></section>
 </div>
 
 <!-- ================= RIGHT ================= -->
 <div class="newsPanel" id="newsBox">
-  <div class="breaking">BREAKING</div>
+  <div class="breaking latest" id="breakingTag">LATEST</div>
 
-  <div class="tickerWrap">
-    <div class="ticker" id="newsTicker"></div>
+  <div class="newsViewport">
+    <div class="newsScroller" id="newsScroller"></div>
   </div>
 </div>
 
@@ -261,23 +266,27 @@ function renderCards(data){
   });
 }
 
-/* ================= LOCAL NEWS ================= */
+/* ================= LOCAL NEWS (VERTICAL + BREAKING AUTO) ================= */
 const NEWS_URL="https://raw.githubusercontent.com/noadamanjodi/noa-news/main/json/local_news.json";
+const SIX_HOURS = 6 * 60 * 60 * 1000;
 
-function badgeClass(title){
-  title=title.toLowerCase();
-  if(title.includes("damanjodi")) return "b-damanjodi";
-  if(title.includes("koraput")) return "b-koraput";
-  if(title.includes("rayagada")) return "b-rayagada";
-  if(title.includes("nalco")) return "b-nalco";
+function badgeClass(t){
+  t=t.toLowerCase();
+  if(t.includes("damanjodi")) return "b-damanjodi";
+  if(t.includes("koraput")) return "b-koraput";
+  if(t.includes("rayagada")) return "b-rayagada";
+  if(t.includes("nalco")) return "b-nalco";
   return "b-local";
 }
 
 fetch(NEWS_URL).then(r=>r.json()).then(j=>{
-  const t=document.getElementById("newsTicker");
-  let html=`<strong style="font-size:18px;color:#0d47a1;">📰 Local News</strong>`;
+  const s=document.getElementById("newsScroller");
+  const b=document.getElementById("breakingTag");
+  let html=`<h3 style="text-align:center;color:#0d47a1;">📰 Local News</h3>`;
+  let now=Date.now(), breaking=false;
 
   j.items.forEach(n=>{
+    if(now - new Date(n.date).getTime() <= SIX_HOURS) breaking=true;
     html+=`
       <div class="newsItem">
         <span class="badge ${badgeClass(n.title)}">Local</span>
@@ -288,17 +297,22 @@ fetch(NEWS_URL).then(r=>r.json()).then(j=>{
       </div>`;
   });
 
-  t.innerHTML = html + html;
-  t.style.animationDuration = getComputedStyle(document.documentElement)
-    .getPropertyValue('--ticker-speed');
+  s.innerHTML = html + html;
+  s.style.animation = "scrollUp var(--scroll-speed) linear infinite";
+
+  if(breaking){
+    b.textContent="BREAKING";
+    b.classList.remove("latest");
+    b.classList.add("active");
+  }
 });
 
 /* Pause on hover */
 document.getElementById("newsBox").onmouseenter=()=>{
-  document.getElementById("newsTicker").style.animationPlayState="paused";
+  document.getElementById("newsScroller").style.animationPlayState="paused";
 };
 document.getElementById("newsBox").onmouseleave=()=>{
-  document.getElementById("newsTicker").style.animationPlayState="running";
+  document.getElementById("newsScroller").style.animationPlayState="running";
 };
 </script>
 
