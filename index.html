@@ -5,6 +5,15 @@
 <title>Damanjodi Local Guide</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<!-- 🔹 GOOGLE ANALYTICS -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G5WFS9428J"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-G5WFS9428J');
+</script>
+
 <style>
 body{
   margin:0;
@@ -12,8 +21,6 @@ body{
   background:linear-gradient(135deg,#eaf0ff,#ffffff);
   color:#1a1a1a;
 }
-
-/* HEADER */
 header{
   text-align:center;
   padding:40px 20px;
@@ -21,18 +28,12 @@ header{
   color:white;
 }
 header h1{margin:0;font-size:34px;}
-header p{opacity:.9}
-
-/* SEARCH */
 .search-box{text-align:center;padding:15px;}
 .search-box input{
   width:90%;max-width:420px;
-  padding:10px 14px;
-  border-radius:25px;
+  padding:10px 14px;border-radius:25px;
   border:1px solid #b9c7e4;
 }
-
-/* FILTERS */
 .filters{text-align:center;padding:10px;}
 .filters button{
   margin:6px;padding:8px 16px;
@@ -40,62 +41,39 @@ header p{opacity:.9}
   background:#0057d9;color:white;cursor:pointer;
 }
 .filters button.active{background:#003f88}
-
-/* GRID */
 .container{
   max-width:1200px;margin:auto;padding:20px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
   gap:30px;
 }
-
-/* CARD */
 .card{
-  background:white;
-  border-radius:22px;
+  background:white;border-radius:22px;
   box-shadow:0 14px 35px rgba(0,0,0,.15);
-  overflow:hidden;
+  overflow:hidden;cursor:pointer;
 }
-
-/* SLIDER */
 .slider{position:relative;text-align:center;}
 .slider img{
-  width:100%;
-  max-height:280px;
-  object-fit:contain;
-  background:#f5f7ff;
+  width:100%;max-height:260px;
+  object-fit:contain;background:#f5f7ff;
 }
 .arrow{
   position:absolute;top:45%;
   background:rgba(0,0,0,.5);
   color:white;border:none;
   padding:6px 10px;border-radius:50%;
-  cursor:pointer;
 }
-.prev{left:8px}
-.next{right:8px}
-
-/* DOTS */
+.prev{left:8px}.next{right:8px}
 .dots{text-align:center;padding:8px;}
 .dots span{
-  height:8px;width:8px;
-  margin:0 4px;
-  background:#bbb;
-  display:inline-block;
-  border-radius:50%;
-  cursor:pointer;
+  height:8px;width:8px;margin:0 4px;
+  background:#bbb;display:inline-block;
+  border-radius:50%;cursor:pointer;
 }
 .dots .active{background:#003f88}
-
-/* CONTENT */
 .card-content{
-  padding:18px;
-  text-align:center;
+  padding:18px;text-align:center;
 }
-.card-content h3{margin:6px 0;color:#003f88}
-.card-content p{margin:6px 0;font-size:14px}
-
-/* ACTIONS */
 .actions{
   margin-top:10px;
   display:flex;justify-content:center;gap:10px;
@@ -108,26 +86,11 @@ header p{opacity:.9}
 .actions a.secondary{
   background:#eaf0ff;color:#003f88;
 }
-
-/* MAP */
+.detail{display:none;padding:25px;}
+.back{color:#0057d9;cursor:pointer;}
 .map iframe{
-  width:100%;
-  height:220px;
-  border:0;
-  margin-top:10px;
-  border-radius:12px;
-}
-
-/* DETAIL PAGE */
-.detail{
-  display:none;
-  padding:25px;
-}
-.back{
-  display:inline-block;
-  margin-bottom:10px;
-  color:#0057d9;
-  cursor:pointer;
+  width:100%;height:250px;border:0;
+  border-radius:12px;margin-top:10px;
 }
 </style>
 </head>
@@ -149,7 +112,7 @@ header p{opacity:.9}
 
 <script>
 const JSON_URL="https://raw.githubusercontent.com/noadamanjodi/noa-data/main/json/local_guide.json";
-let allData=[],slideTimers={};
+let allData=[],timers={};
 
 fetch(JSON_URL).then(r=>r.json()).then(d=>{
   allData=d;buildFilters(d);renderCards(d);
@@ -176,43 +139,43 @@ function buildFilters(d){
 }
 
 function renderCards(data){
+  document.getElementById("detail").style.display="none";
   const c=document.getElementById("cards");
-  const d=document.getElementById("detail");
-  d.style.display="none";c.style.display="grid";
-  c.innerHTML="";
+  c.style.display="grid";c.innerHTML="";
   data.forEach((x,i)=>{
     const photos=x.Photos?.length?x.Photos:[x.Photo_Link];
     c.innerHTML+=`
-      <div class="card">
+      <div class="card" onclick="openDetail(${i})">
         <div class="slider">
           <img id="img${i}" src="${photos[0]}">
           ${photos.length>1?`
-          <button class="arrow prev" onclick="slide(${i},-1)">‹</button>
-          <button class="arrow next" onclick="slide(${i},1)">›</button>`:""}
+          <button class="arrow prev" onclick="event.stopPropagation();slide(${i},-1)">‹</button>
+          <button class="arrow next" onclick="event.stopPropagation();slide(${i},1)">›</button>`:""}
         </div>
-        <div class="dots" id="dots${i}">${photos.map((_,j)=>`<span onclick="setSlide(${i},${j})"></span>`).join("")}</div>
+        <div class="dots" id="dots${i}">${photos.map(()=>"<span></span>").join("")}</div>
         <div class="card-content">
           <h3>${x.Name}</h3>
           <p>${x.Description}</p>
           <p>☎️ ${x.Contact}</p>
           <div class="actions">
-            <a onclick="openDetail(${i})">View Details</a>
-            <a class="secondary" href="tel:${x.Contact}">Call</a>
+            <a href="${x.Map_Link}" target="_blank"
+               onclick="event.stopPropagation();track('map_click','${x.Name}')">📍 Map</a>
+            <a class="secondary" href="tel:${x.Contact}"
+               onclick="event.stopPropagation();track('call_click','${x.Name}')">Call</a>
           </div>
         </div>
       </div>`;
-    autoSlide(i,photos);
-    updateDots(i,0);
+    autoSlide(i,photos);updateDots(i,0);
   });
 }
 
 function autoSlide(i,p){
-  clearInterval(slideTimers[i]);
-  let idx=0;
-  slideTimers[i]=setInterval(()=>{
+  clearInterval(timers[i]);let idx=0;
+  timers[i]=setInterval(()=>{
     idx=(idx+1)%p.length;
     document.getElementById("img"+i).src=p[idx];
     updateDots(i,idx);
+    track('image_slide',allData[i].Name);
   },4000);
 }
 
@@ -221,14 +184,7 @@ function slide(i,d){
   const img=document.getElementById("img"+i);
   let idx=p.indexOf(img.src);
   idx=(idx+d+p.length)%p.length;
-  img.src=p[idx];
-  updateDots(i,idx);
-}
-
-function setSlide(i,j){
-  const img=document.getElementById("img"+i);
-  img.src=(allData[i].Photos||[allData[i].Photo_Link])[j];
-  updateDots(i,j);
+  img.src=p[idx];updateDots(i,idx);
 }
 
 function updateDots(i,idx){
@@ -238,10 +194,11 @@ function updateDots(i,idx){
 }
 
 function openDetail(i){
-  const x=allData[i];
+  track('card_open',allData[i].Name);
   document.getElementById("cards").style.display="none";
   const d=document.getElementById("detail");
   d.style.display="block";
+  const x=allData[i];
   d.innerHTML=`
     <span class="back" onclick="renderCards(allData)">← Back</span>
     <h2>${x.Name}</h2>
@@ -249,8 +206,11 @@ function openDetail(i){
     <p>☎️ ${x.Contact}</p>
     <div class="map">
       <iframe src="https://www.google.com/maps?q=${encodeURIComponent(x.Name)}&output=embed"></iframe>
-    </div>
-  `;
+    </div>`;
+}
+
+function track(action,label){
+  gtag('event',action,{event_category:'Local Guide',event_label:label});
 }
 </script>
 
