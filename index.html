@@ -66,10 +66,13 @@ header p{opacity:.9}
   box-shadow:0 22px 45px rgba(0,87,217,.35);
 }
 
+/* ✅ AUTO IMAGE HEIGHT – NO CROP */
 .card img{
   width:100%;
-  height:180px;
-  object-fit:cover;
+  height:auto;
+  max-height:260px;
+  object-fit:contain;
+  background:#f5f7ff;
 }
 
 .card-content{
@@ -184,7 +187,7 @@ function renderCards(data){
           <p>${d.Description}</p>
           ${d.Contact ? `<p>☎️ ${d.Contact}</p>` : ""}
           <div class="actions">
-            ${d.Map ? `<a href="${d.Map_Link}" target="_blank">📍 Map</a>` : ""}
+            ${d.Map_Link ? `<a href="${d.Map_Link}" target="_blank">📍 Map</a>` : ""}
             ${d.Contact ? `<a class="secondary" href="tel:${d.Contact}">Call</a>` : ""}
           </div>
         </div>
