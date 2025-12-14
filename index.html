@@ -21,76 +21,173 @@ body{
   background:linear-gradient(135deg,#eaf0ff,#ffffff);
   color:#1a1a1a;
 }
+
+/* HEADER */
 header{
   text-align:center;
-  padding:40px 20px;
+  padding:36px 20px;
   background:linear-gradient(135deg,#003f88,#0057d9);
   color:white;
 }
 header h1{margin:0;font-size:34px;}
-.search-box{text-align:center;padding:15px;}
+header p{opacity:.9}
+
+/* LAYOUT */
+.mainLayout{
+  max-width:1400px;
+  margin:auto;
+  padding:20px;
+  display:grid;
+  grid-template-columns:3fr 1.4fr;
+  gap:30px;
+}
+@media(max-width:1000px){
+  .mainLayout{grid-template-columns:1fr;}
+}
+
+/* SEARCH + FILTER */
+.search-box{text-align:center;padding:10px;}
 .search-box input{
   width:90%;max-width:420px;
-  padding:10px 14px;border-radius:25px;
+  padding:10px 14px;
+  border-radius:25px;
   border:1px solid #b9c7e4;
 }
 .filters{text-align:center;padding:10px;}
 .filters button{
-  margin:6px;padding:8px 16px;
-  border:none;border-radius:20px;
-  background:#0057d9;color:white;cursor:pointer;
+  margin:6px;
+  padding:8px 16px;
+  border:none;
+  border-radius:20px;
+  background:#0057d9;
+  color:white;
+  cursor:pointer;
+  font-size:14px;
 }
 .filters button.active{background:#003f88}
+
+/* LOCAL GUIDE CARDS */
 .container{
-  max-width:1200px;margin:auto;padding:20px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:30px;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:26px;
+  perspective:1200px;
 }
 .card{
-  background:white;border-radius:22px;
-  box-shadow:0 14px 35px rgba(0,0,0,.15);
-  overflow:hidden;cursor:pointer;
+  background:white;
+  border-radius:20px;
+  box-shadow:0 12px 28px rgba(0,0,0,.14);
+  overflow:hidden;
+  transition:transform .35s ease, box-shadow .35s ease;
 }
-.slider{position:relative;text-align:center;}
-.slider img{
-  width:100%;max-height:260px;
-  object-fit:contain;background:#f5f7ff;
+.card:hover{
+  transform:translateY(-10px) rotateX(4deg) rotateY(-4deg);
+  box-shadow:0 25px 45px rgba(0,0,0,0.25);
 }
-.arrow{
-  position:absolute;top:45%;
-  background:rgba(0,0,0,.5);
-  color:white;border:none;
-  padding:6px 10px;border-radius:50%;
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  background:#f5f7ff;
 }
-.prev{left:8px}.next{right:8px}
-.dots{text-align:center;padding:8px;}
-.dots span{
-  height:8px;width:8px;margin:0 4px;
-  background:#bbb;display:inline-block;
-  border-radius:50%;cursor:pointer;
-}
-.dots .active{background:#003f88}
 .card-content{
-  padding:18px;text-align:center;
+  padding:14px;
+  text-align:center;
+}
+.card-content h3{
+  margin:6px 0 4px;
+  font-size:18px;
+}
+.card-content p{
+  margin:4px 0;
+  font-size:14px;
+  line-height:1.35;
 }
 .actions{
-  margin-top:10px;
-  display:flex;justify-content:center;gap:10px;
+  margin-top:8px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
 }
 .actions a{
-  padding:7px 16px;
-  background:#0057d9;color:white;
-  text-decoration:none;border-radius:20px;
+  padding:7px 18px;
+  background:#0057d9;
+  color:white;
+  text-decoration:none;
+  border-radius:20px;
+  font-size:14px;
 }
 .actions a.secondary{
-  background:#eaf0ff;color:#003f88;
+  background:#eaf0ff;
+  color:#003f88;
 }
-.detail{display:none;padding:25px;}
-.back{color:#0057d9;cursor:pointer;}
-.map iframe{
-  width:100%;height:250px;border:0;
-  border-radius:12px;margin-top:10px;
+
+/* NEWS PANEL */
+.newsPanel{
+  padding:16px;
+  background:rgba(255,255,255,0.65);
+  backdrop-filter:blur(12px);
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  height:520px;
+  overflow:hidden;
+}
+.newsViewport{height:100%;overflow:hidden;position:relative;}
+.newsScroller{
+  position:absolute;
+  width:100%;
+  animation:scrollUp 22s linear infinite;
+}
+.newsPanel:hover .newsScroller{animation-play-state:paused;}
+
+.newsHeader{
+  position:sticky;
+  top:0;
+  background:#ffffff;
+  padding:12px 10px;
+  font-size:18px;
+  font-weight:700;
+  color:#0d47a1;
+  border-bottom:1px solid #e0e6f5;
+  z-index:2;
+}
+
+.newsItem{
+  padding:14px 16px;
+  margin-bottom:14px;
+  border-radius:14px;
+  background:white;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+.newsItem a{
+  color:#0a3d62;
+  font-weight:600;
+  font-size:15px;
+  text-decoration:none;
+}
+
+/* TAGS */
+.badge{
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:12px;
+  font-size:11px;
+  color:white;
+  margin-left:8px;
+}
+.breaking{background:#d93025;}
+.region-damanjodi{background:#1e88e5;}
+.region-koraput{background:#2e7d32;}
+.region-other{background:#6a1b9a;}
+
+@keyframes scrollUp{
+  from{transform:translateY(0)}
+  to{transform:translateY(-50%)}
+}
+
+/* 📱 MOBILE SWIPE */
+@media (max-width:768px){
+  .card{touch-action:pan-y;}
 }
 </style>
 </head>
@@ -99,7 +196,7 @@ header h1{margin:0;font-size:34px;}
 
 <header>
   <h1>Damanjodi Local Guide</h1>
-  <p>Auto-updated township information</p>
+  <p>Township services & real-time local news</p>
 </header>
 
 <div class="search-box">
@@ -107,15 +204,33 @@ header h1{margin:0;font-size:34px;}
 </div>
 
 <div class="filters" id="filters"></div>
-<section class="container" id="cards"></section>
-<section class="detail" id="detail"></section>
+
+<div class="mainLayout">
+
+  <!-- LEFT : LOCAL GUIDE -->
+  <section class="container" id="cards"></section>
+
+  <!-- RIGHT : LOCAL NEWS -->
+  <aside class="newsPanel">
+    <div class="newsViewport">
+      <div class="newsScroller" id="newsScroller">
+        <div class="newsHeader">📰 Local News</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
 
 <script>
-const JSON_URL="https://raw.githubusercontent.com/noadamanjodi/noa-data/main/json/local_guide.json";
-let allData=[],timers={};
+/* ================= LOCAL GUIDE ================= */
+const GUIDE_URL =
+"https://raw.githubusercontent.com/noadamanjodi/noa-data/main/json/local_guide.json";
+let allData=[];
 
-fetch(JSON_URL).then(r=>r.json()).then(d=>{
-  allData=d;buildFilters(d);renderCards(d);
+fetch(GUIDE_URL).then(r=>r.json()).then(d=>{
+  allData=d;
+  buildFilters(d);
+  renderCards(d);
 });
 
 document.getElementById("search").oninput=e=>{
@@ -123,12 +238,14 @@ document.getElementById("search").oninput=e=>{
   renderCards(allData.filter(x=>x.Name.toLowerCase().includes(q)));
 };
 
-function buildFilters(d){
-  const cats=["All",...new Set(d.map(x=>x.Category))];
-  const f=document.getElementById("filters");f.innerHTML="";
+function buildFilters(data){
+  const cats=["All",...new Set(data.map(x=>x.Category))];
+  const f=document.getElementById("filters");
+  f.innerHTML="";
   cats.forEach((c,i)=>{
     const b=document.createElement("button");
-    b.textContent=c;if(i===0)b.classList.add("active");
+    b.textContent=c;
+    if(i===0)b.classList.add("active");
     b.onclick=()=>{
       document.querySelectorAll(".filters button").forEach(x=>x.classList.remove("active"));
       b.classList.add("active");
@@ -139,92 +256,85 @@ function buildFilters(d){
 }
 
 function renderCards(data){
-  document.getElementById("detail").style.display="none";
   const c=document.getElementById("cards");
-  c.style.display="grid";
   c.innerHTML="";
-
-  data.forEach((x,i)=>{
-    const photos=x.Photos?.length?x.Photos:[x.Photo_Link];
-
+  data.forEach(x=>{
     c.innerHTML+=`
       <div class="card">
-        <div class="slider">
-          <img id="img${i}" src="${photos[0]}">
-          ${photos.length>1?`
-            <button class="arrow prev" onclick="slide(${i},-1)">‹</button>
-            <button class="arrow next" onclick="slide(${i},1)">›</button>
-          `:""}
-        </div>
-
-        <div class="dots" id="dots${i}">
-          ${photos.map(()=>"<span></span>").join("")}
-        </div>
-
+        <img src="${x.Photo_Link}">
         <div class="card-content">
           <h3>${x.Name}</h3>
           <p>${x.Description}</p>
           <p>☎️ ${x.Contact}</p>
-
           <div class="actions">
-            <a href="${x.Map_Link}" target="_blank"
-               onclick="track('map_click','${x.Name}')">📍 Map</a>
-
-            <a class="secondary" href="tel:${x.Contact}"
-               onclick="track('call_click','${x.Name}')">Call</a>
+            <a href="${x.Map_Link}" target="_blank">📍 Map</a>
+            <a class="secondary" href="tel:${x.Contact}">Call</a>
           </div>
         </div>
-      </div>
-    `;
-
-    autoSlide(i,photos);
-    updateDots(i,0);
+      </div>`;
   });
 }
 
-function autoSlide(i,p){
-  clearInterval(timers[i]);let idx=0;
-  timers[i]=setInterval(()=>{
-    idx=(idx+1)%p.length;
-    document.getElementById("img"+i).src=p[idx];
-    updateDots(i,idx);
-    track('image_slide',allData[i].Name);
-  },4000);
+/* ================= LOCAL NEWS ================= */
+const NEWS_URL =
+"https://raw.githubusercontent.com/noadamanjodi/noa-news/main/json/local_news.json";
+
+function detectRegion(title){
+  const t=title.toLowerCase();
+  if(t.includes("damanjodi")) return ["Damanjodi","region-damanjodi"];
+  if(t.includes("koraput")) return ["Koraput","region-koraput"];
+  return ["Other","region-other"];
 }
 
-function slide(i,d){
-  const p=allData[i].Photos||[allData[i].Photo_Link];
-  const img=document.getElementById("img"+i);
-  let idx=p.indexOf(img.src);
-  idx=(idx+d+p.length)%p.length;
-  img.src=p[idx];updateDots(i,idx);
-}
+fetch(NEWS_URL)
+.then(r=>r.json())
+.then(j=>{
+  const items=j.items||[];
+  const box=document.getElementById("newsScroller");
+  let html=box.innerHTML;
 
-function updateDots(i,idx){
-  const dots=document.querySelectorAll("#dots"+i+" span");
-  dots.forEach(d=>d.classList.remove("active"));
-  if(dots[idx])dots[idx].classList.add("active");
-}
+  items.slice(0,12).forEach(n=>{
+    const hrs=(Date.now()-new Date(n.date))/(1000*60*60);
+    const breaking=hrs<=6;
+    const [region,cls]=detectRegion(n.title);
 
-function openDetail(i){
-  track('card_open',allData[i].Name);
-  document.getElementById("cards").style.display="none";
-  const d=document.getElementById("detail");
-  d.style.display="block";
-  const x=allData[i];
-  d.innerHTML=`
-    <span class="back" onclick="renderCards(allData)">← Back</span>
-    <h2>${x.Name}</h2>
-    <p>${x.Description}</p>
-    <p>☎️ ${x.Contact}</p>
-    <div class="map">
-      <iframe src="https://www.google.com/maps?q=${encodeURIComponent(x.Name)}&output=embed"></iframe>
-    </div>`;
-}
+    html+=`
+      <div class="newsItem">
+        <a href="${n.url}" target="_blank">${n.title}</a>
+        <div style="margin-top:6px">
+          <span class="badge ${cls}">${region}</span>
+          ${breaking?'<span class="badge breaking">BREAKING</span>':''}
+        </div>
+      </div>`;
+  });
 
-function track(action,label){
-  gtag('event',action,{event_category:'Local Guide',event_label:label});
-}
+  box.innerHTML=html+html;
+});
+
+/* 📱 MOBILE SWIPE EFFECT */
+let startX=0, currentCard=null;
+
+document.addEventListener("touchstart",e=>{
+  const c=e.target.closest(".card");
+  if(!c) return;
+  startX=e.touches[0].clientX;
+  currentCard=c;
+});
+
+document.addEventListener("touchmove",e=>{
+  if(!currentCard) return;
+  const dx=e.touches[0].clientX-startX;
+  currentCard.style.transform=
+    `translateX(${dx}px) rotateY(${dx/12}deg)`;
+});
+
+document.addEventListener("touchend",()=>{
+  if(!currentCard) return;
+  currentCard.style.transition="transform .3s ease";
+  currentCard.style.transform="translateX(0) rotateY(0)";
+  setTimeout(()=>currentCard.style.transition="",300);
+  currentCard=null;
+});
 </script>
 
 </body>
