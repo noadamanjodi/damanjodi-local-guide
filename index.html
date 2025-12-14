@@ -8,60 +8,108 @@
 <style>
 body{
   margin:0;
-  font-family:'Segoe UI', Arial;
+  font-family:'Segoe UI',Arial;
   background:linear-gradient(135deg,#eaf0ff,#ffffff);
   color:#1a1a1a;
 }
 
 header{
   text-align:center;
-  padding:45px 20px;
+  padding:40px 20px;
   background:linear-gradient(135deg,#003f88,#0057d9);
   color:white;
 }
 
 header h1{margin:0;font-size:34px;}
-header p{opacity:.9;font-size:16px;}
+header p{opacity:.9}
+
+.filters{
+  text-align:center;
+  padding:20px;
+}
+
+.filters button{
+  margin:6px;
+  padding:8px 16px;
+  border:none;
+  border-radius:20px;
+  background:#0057d9;
+  color:white;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.filters button.active{
+  background:#003f88;
+}
 
 .container{
   max-width:1200px;
   margin:auto;
-  padding:40px 20px;
+  padding:20px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:25px;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:28px;
 }
 
 .card{
-  background:rgba(255,255,255,0.65);
-  backdrop-filter:blur(10px);
-  border-radius:20px;
-  padding:25px;
-  box-shadow:0 12px 30px rgba(0,0,0,0.15);
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(12px);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 14px 35px rgba(0,0,0,0.15);
   transition:.3s;
 }
 
 .card:hover{
   transform:translateY(-8px);
-  box-shadow:0 18px 40px rgba(0,87,217,0.35);
+  box-shadow:0 22px 45px rgba(0,87,217,.35);
+}
+
+.card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+
+.card-content{
+  padding:20px;
 }
 
 .card h3{
-  margin-top:0;
+  margin:0;
   color:#003f88;
 }
 
-.card ul{
-  padding-left:18px;
+.card p{
+  font-size:14px;
+  margin:6px 0;
 }
 
-.card li{
-  margin-bottom:8px;
+.actions{
+  margin-top:10px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.actions a{
+  padding:7px 14px;
+  background:#0057d9;
+  color:white;
+  text-decoration:none;
+  border-radius:20px;
+  font-size:13px;
+}
+
+.actions a.secondary{
+  background:#eaf0ff;
+  color:#003f88;
 }
 
 footer{
   text-align:center;
-  padding:25px;
+  padding:22px;
   background:#003f88;
   color:white;
   font-size:14px;
@@ -73,70 +121,78 @@ footer{
 
 <header>
   <h1>Damanjodi Local Guide</h1>
-  <p>Your complete township & local information hub</p>
+  <p>Auto-updated township information</p>
 </header>
 
-<section class="container">
+<div class="filters" id="filters"></div>
 
-<div class="card">
-  <h3>🏥 Hospitals</h3>
-  <ul>
-    <li>HAL Hospital</li>
-    <li>Community Health Centre</li>
-    <li>24x7 Ambulance Services</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h3>🏫 Education</h3>
-  <ul>
-    <li>DAV School</li>
-    <li>Government High School</li>
-    <li>ITI & Colleges nearby</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h3>🛒 Markets</h3>
-  <ul>
-    <li>Main Market Complex</li>
-    <li>Weekly Bazaar</li>
-    <li>Medical & Grocery Stores</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h3>🍴 Hotels & Food</h3>
-  <ul>
-    <li>Township Canteen</li>
-    <li>Local Restaurants</li>
-    <li>Tea & Snack Points</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h3>🚌 Transport</h3>
-  <ul>
-    <li>Bus Stand</li>
-    <li>Railway Station (Koraput)</li>
-    <li>Auto & Taxi Services</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h3>🏞️ Tourist Places</h3>
-  <ul>
-    <li>Deomali Hills</li>
-    <li>Waterfalls Nearby</li>
-    <li>Picnic Spots</li>
-  </ul>
-</div>
-
-</section>
+<section class="container" id="cards"></section>
 
 <footer>
   © 2025 NALCO Officers Association – Damanjodi
 </footer>
+
+<script>
+const JSON_URL =
+"https://raw.githubusercontent.com/noadamanjodi/noa-data/main/json/local_guide.json";
+
+let allData = [];
+
+fetch(JSON_URL)
+.then(res => res.json())
+.then(data => {
+  allData = data;
+  buildFilters(data);
+  renderCards(data);
+});
+
+function buildFilters(data){
+  const cats = ["All", ...new Set(data.map(d => d.Category))];
+  const filterDiv = document.getElementById("filters");
+
+  cats.forEach((cat,i)=>{
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    if(i===0) btn.classList.add("active");
+
+    btn.onclick = ()=>{
+      document.querySelectorAll(".filters button")
+        .forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const filtered = cat==="All"
+        ? allData
+        : allData.filter(d => d.Category===cat);
+
+      renderCards(filtered);
+    };
+
+    filterDiv.appendChild(btn);
+  });
+}
+
+function renderCards(data){
+  const cards = document.getElementById("cards");
+  cards.innerHTML = "";
+
+  data.forEach(d=>{
+    cards.innerHTML += `
+      <div class="card">
+        <img src="${d.Photo}" alt="${d.Name}">
+        <div class="card-content">
+          <h3>${d.Name}</h3>
+          <p>${d.Description}</p>
+          ${d.Contact ? `<p>☎️ ${d.Contact}</p>` : ""}
+          <div class="actions">
+            ${d.Map ? `<a href="${d.Map}" target="_blank">📍 Map</a>` : ""}
+            ${d.Contact ? `<a class="secondary" href="tel:${d.Contact}">Call</a>` : ""}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+</script>
 
 </body>
 </html>
