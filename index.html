@@ -24,149 +24,110 @@ header h1{margin:0;font-size:34px;}
 header p{opacity:.9}
 
 /* SEARCH */
-.search-box{
-  text-align:center;
-  padding:15px;
-}
+.search-box{text-align:center;padding:15px;}
 .search-box input{
-  width:90%;
-  max-width:420px;
+  width:90%;max-width:420px;
   padding:10px 14px;
   border-radius:25px;
   border:1px solid #b9c7e4;
-  font-size:15px;
 }
 
 /* FILTERS */
 .filters{text-align:center;padding:10px;}
 .filters button{
-  margin:6px;
-  padding:8px 16px;
-  border:none;
-  border-radius:20px;
-  background:#0057d9;
-  color:white;
-  cursor:pointer;
+  margin:6px;padding:8px 16px;
+  border:none;border-radius:20px;
+  background:#0057d9;color:white;cursor:pointer;
 }
 .filters button.active{background:#003f88}
 
 /* GRID */
 .container{
-  max-width:1200px;
-  margin:auto;
-  padding:20px;
+  max-width:1200px;margin:auto;padding:20px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:28px;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:30px;
 }
 
 /* CARD */
 .card{
-  background:rgba(255,255,255,0.85);
+  background:white;
   border-radius:22px;
-  box-shadow:0 14px 35px rgba(0,0,0,0.15);
+  box-shadow:0 14px 35px rgba(0,0,0,.15);
   overflow:hidden;
-  cursor:pointer;
-  transition:.3s;
 }
-.card:hover{transform:translateY(-6px);}
 
-/* IMAGE / SLIDER */
-.slider{
-  position:relative;
-}
+/* SLIDER */
+.slider{position:relative;text-align:center;}
 .slider img{
   width:100%;
-  height:auto;
-  max-height:260px;
+  max-height:280px;
   object-fit:contain;
   background:#f5f7ff;
 }
-.slider button{
-  position:absolute;
-  top:45%;
-  background:rgba(0,0,0,0.5);
-  color:white;
-  border:none;
-  padding:6px 10px;
+.arrow{
+  position:absolute;top:45%;
+  background:rgba(0,0,0,.5);
+  color:white;border:none;
+  padding:6px 10px;border-radius:50%;
   cursor:pointer;
-  border-radius:50%;
 }
 .prev{left:8px}
 .next{right:8px}
 
+/* DOTS */
+.dots{text-align:center;padding:8px;}
+.dots span{
+  height:8px;width:8px;
+  margin:0 4px;
+  background:#bbb;
+  display:inline-block;
+  border-radius:50%;
+  cursor:pointer;
+}
+.dots .active{background:#003f88}
+
 /* CONTENT */
 .card-content{
   padding:18px;
+  text-align:center;
 }
-.card-content h3{
-  margin:0;
-  color:#003f88;
-}
-.card-content p{
-  margin:6px 0;
-  font-size:14px;
-}
+.card-content h3{margin:6px 0;color:#003f88}
+.card-content p{margin:6px 0;font-size:14px}
 
 /* ACTIONS */
 .actions{
   margin-top:10px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
+  display:flex;justify-content:center;gap:10px;
 }
 .actions a{
-  padding:7px 14px;
-  background:#0057d9;
-  color:white;
-  text-decoration:none;
-  border-radius:20px;
-  font-size:13px;
+  padding:7px 16px;
+  background:#0057d9;color:white;
+  text-decoration:none;border-radius:20px;
 }
 .actions a.secondary{
-  background:#eaf0ff;
-  color:#003f88;
+  background:#eaf0ff;color:#003f88;
 }
 
-/* EMERGENCY PANEL */
-.emergency{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:#d32f2f;
-  color:white;
-  padding:14px 18px;
-  border-radius:30px;
-  box-shadow:0 10px 30px rgba(0,0,0,.3);
-  z-index:999;
-}
-.emergency a{
-  color:white;
-  font-weight:bold;
-  text-decoration:none;
+/* MAP */
+.map iframe{
+  width:100%;
+  height:220px;
+  border:0;
+  margin-top:10px;
+  border-radius:12px;
 }
 
-/* MODAL */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
+/* DETAIL PAGE */
+.detail{
   display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:1000;
+  padding:25px;
 }
-.modal-content{
-  background:white;
-  max-width:600px;
-  width:90%;
-  border-radius:18px;
-  padding:20px;
-}
-.close{
-  float:right;
+.back{
+  display:inline-block;
+  margin-bottom:10px;
+  color:#0057d9;
   cursor:pointer;
-  font-size:20px;
 }
 </style>
 </head>
@@ -179,118 +140,117 @@ header p{opacity:.9}
 </header>
 
 <div class="search-box">
-  <input type="text" id="search" placeholder="Search hospital, school, market...">
+  <input id="search" placeholder="Search hospital, school, market...">
 </div>
 
 <div class="filters" id="filters"></div>
 <section class="container" id="cards"></section>
-
-<!-- EMERGENCY -->
-<div class="emergency">
-  🚨 <a href="tel:108">Emergency 108</a>
-</div>
-
-<!-- DETAIL MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content" id="modalContent">
-    <span class="close" onclick="closeModal()">✖</span>
-  </div>
-</div>
+<section class="detail" id="detail"></section>
 
 <script>
-const JSON_URL =
-"https://raw.githubusercontent.com/noadamanjodi/noa-data/main/json/local_guide.json";
+const JSON_URL="https://raw.githubusercontent.com/noadamanjodi/noa-data/main/json/local_guide.json";
+let allData=[],slideTimers={};
 
-let allData = [];
-
-fetch(JSON_URL)
-.then(res => res.json())
-.then(data => {
-  allData = data;
-  buildFilters(data);
-  renderCards(data);
+fetch(JSON_URL).then(r=>r.json()).then(d=>{
+  allData=d;buildFilters(d);renderCards(d);
 });
 
-document.getElementById("search").oninput = e => {
-  const q = e.target.value.toLowerCase();
-  renderCards(allData.filter(d =>
-    d.Name.toLowerCase().includes(q) ||
-    d.Category.toLowerCase().includes(q)
-  ));
+document.getElementById("search").oninput=e=>{
+  const q=e.target.value.toLowerCase();
+  renderCards(allData.filter(x=>x.Name.toLowerCase().includes(q)));
 };
 
-function buildFilters(data){
-  const cats = ["All", ...new Set(data.map(d => d.Category))];
-  const f = document.getElementById("filters");
-  f.innerHTML = "";
-
+function buildFilters(d){
+  const cats=["All",...new Set(d.map(x=>x.Category))];
+  const f=document.getElementById("filters");f.innerHTML="";
   cats.forEach((c,i)=>{
-    const b = document.createElement("button");
-    b.textContent = c;
-    if(i===0) b.classList.add("active");
-
-    b.onclick = ()=>{
-      document.querySelectorAll(".filters button")
-        .forEach(x=>x.classList.remove("active"));
+    const b=document.createElement("button");
+    b.textContent=c;if(i===0)b.classList.add("active");
+    b.onclick=()=>{
+      document.querySelectorAll(".filters button").forEach(x=>x.classList.remove("active"));
       b.classList.add("active");
-      renderCards(c==="All" ? allData : allData.filter(d=>d.Category===c));
+      renderCards(c==="All"?allData:allData.filter(x=>x.Category===c));
     };
     f.appendChild(b);
   });
 }
 
 function renderCards(data){
-  const c = document.getElementById("cards");
-  c.innerHTML = "";
-
-  data.forEach(d=>{
-    const photos = (d.Photos && d.Photos.length) ? d.Photos : [d.Photo_Link];
-
-    c.innerHTML += `
-      <div class="card" onclick='openModal(${JSON.stringify(d)})'>
+  const c=document.getElementById("cards");
+  const d=document.getElementById("detail");
+  d.style.display="none";c.style.display="grid";
+  c.innerHTML="";
+  data.forEach((x,i)=>{
+    const photos=x.Photos?.length?x.Photos:[x.Photo_Link];
+    c.innerHTML+=`
+      <div class="card">
         <div class="slider">
-          <img src="${photos[0]}" data-photos='${JSON.stringify(photos)}' data-index="0">
-          ${photos.length>1 ? `
-            <button class="prev" onclick="event.stopPropagation();slide(this,-1)">‹</button>
-            <button class="next" onclick="event.stopPropagation();slide(this,1)">›</button>
-          ` : ""}
+          <img id="img${i}" src="${photos[0]}">
+          ${photos.length>1?`
+          <button class="arrow prev" onclick="slide(${i},-1)">‹</button>
+          <button class="arrow next" onclick="slide(${i},1)">›</button>`:""}
         </div>
-
+        <div class="dots" id="dots${i}">${photos.map((_,j)=>`<span onclick="setSlide(${i},${j})"></span>`).join("")}</div>
         <div class="card-content">
-          <h3>${d.Name}</h3>
-          <p>${d.Description}</p>
-          <p>☎️ ${d.Contact}</p>
+          <h3>${x.Name}</h3>
+          <p>${x.Description}</p>
+          <p>☎️ ${x.Contact}</p>
           <div class="actions">
-            <a href="${d.Map_Link}" target="_blank">📍 Map</a>
-            <a class="secondary" href="tel:${d.Contact}">Call</a>
+            <a onclick="openDetail(${i})">View Details</a>
+            <a class="secondary" href="tel:${x.Contact}">Call</a>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
+    autoSlide(i,photos);
+    updateDots(i,0);
   });
 }
 
-function slide(btn,dir){
-  const img = btn.parentElement.querySelector("img");
-  const photos = JSON.parse(img.dataset.photos);
-  let idx = parseInt(img.dataset.index);
-  idx = (idx + dir + photos.length) % photos.length;
-  img.src = photos[idx];
-  img.dataset.index = idx;
+function autoSlide(i,p){
+  clearInterval(slideTimers[i]);
+  let idx=0;
+  slideTimers[i]=setInterval(()=>{
+    idx=(idx+1)%p.length;
+    document.getElementById("img"+i).src=p[idx];
+    updateDots(i,idx);
+  },4000);
 }
 
-function openModal(d){
-  document.getElementById("modalContent").innerHTML = `
-    <span class="close" onclick="closeModal()">✖</span>
-    <h2>${d.Name}</h2>
-    <p>${d.Description}</p>
-    <p>☎️ ${d.Contact}</p>
-    <p><a href="${d.Map_Link}" target="_blank">📍 View on Map</a></p>
-  `;
-  document.getElementById("modal").style.display = "flex";
+function slide(i,d){
+  const p=allData[i].Photos||[allData[i].Photo_Link];
+  const img=document.getElementById("img"+i);
+  let idx=p.indexOf(img.src);
+  idx=(idx+d+p.length)%p.length;
+  img.src=p[idx];
+  updateDots(i,idx);
 }
-function closeModal(){
-  document.getElementById("modal").style.display = "none";
+
+function setSlide(i,j){
+  const img=document.getElementById("img"+i);
+  img.src=(allData[i].Photos||[allData[i].Photo_Link])[j];
+  updateDots(i,j);
+}
+
+function updateDots(i,idx){
+  const dots=document.querySelectorAll("#dots"+i+" span");
+  dots.forEach(d=>d.classList.remove("active"));
+  if(dots[idx])dots[idx].classList.add("active");
+}
+
+function openDetail(i){
+  const x=allData[i];
+  document.getElementById("cards").style.display="none";
+  const d=document.getElementById("detail");
+  d.style.display="block";
+  d.innerHTML=`
+    <span class="back" onclick="renderCards(allData)">← Back</span>
+    <h2>${x.Name}</h2>
+    <p>${x.Description}</p>
+    <p>☎️ ${x.Contact}</p>
+    <div class="map">
+      <iframe src="https://www.google.com/maps?q=${encodeURIComponent(x.Name)}&output=embed"></iframe>
+    </div>
+  `;
 }
 </script>
 
