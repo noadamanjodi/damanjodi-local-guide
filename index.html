@@ -178,13 +178,13 @@ function renderCards(data){
   data.forEach(d=>{
     cards.innerHTML += `
       <div class="card">
-        <img src="${d.Photo}" alt="${d.Name}">
+        <img src="${d.Photo_Link}" alt="${d.Name}">
         <div class="card-content">
           <h3>${d.Name}</h3>
           <p>${d.Description}</p>
           ${d.Contact ? `<p>☎️ ${d.Contact}</p>` : ""}
           <div class="actions">
-            ${d.Map ? `<a href="${d.Map}" target="_blank">📍 Map</a>` : ""}
+            ${d.Map ? `<a href="${d.Map_Link}" target="_blank">📍 Map</a>` : ""}
             ${d.Contact ? `<a class="secondary" href="tel:${d.Contact}">Call</a>` : ""}
           </div>
         </div>
